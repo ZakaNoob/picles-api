@@ -9,6 +9,7 @@ import { Pet } from "../schemas/pet.schema";
 
 @Injectable()
 export default class DeletePetByIdUseCase implements IUseCase<DeletePetByIdUseCaseInput, DeletePetByIdUseCaseOutput> {
+    fileService: any;
     
     constructor(
         @Inject(PetTokens.petRepository)
@@ -21,6 +22,7 @@ export default class DeletePetByIdUseCase implements IUseCase<DeletePetByIdUseCa
         if(!pet) {
             throw new PetNotFoundError()
         }
+        const petPhoto = !!pet.photo ? (await this.fileService.readFile(pet.photo)).toString('base64'):null;
 
         await this.petRepository.deleteById(input.id)
 
